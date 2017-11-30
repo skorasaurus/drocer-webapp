@@ -1,9 +1,8 @@
-{#
-    Base layout.
--#}
+{# Base layout. -#}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,15 +11,18 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/materialize.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/prism.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/drocer.css') }}">
-    {% block head -%}
-    {% endblock head -%}
+    <script src="{{ url_for('static', filename='js/jquery-3.1.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/prism.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sha.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/drocer.js') }}"></script>
+    {% block script -%} {% endblock script -%} {% block head -%} {% endblock head -%}
     <title>
-        Cleveland City Record Search
-        {% if self.title()|trim %}:{% endif -%}
-        {% block title %}{% endblock title -%}
+        Cleveland City Record Search {% if self.title()|trim %}:{% endif -%} {% block title %}{% endblock title -%}
     </title>
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="search-results-control" style="display:none; position: absolute; z-index:975; min-width:300px; background: rgba(192, 192, 192, 1); padding: 10px; border: 1px solid black;">
         <button class="btn green lighten-2 waves-effect waves-green" style="float: left;" onclick="drocer.action.match_previous()"><i class="material-icons">skip_previous</i>Match</button>
         <button class="btn green lighten-2 waves-effect waves-green" style="float: right;" onclick="drocer.action.match_next()">Match<i class="material-icons">skip_next</i></button>
@@ -32,69 +34,62 @@
     <div id="search-results-control-shadow" style="display:none; position: absolute; z-index:970; min-width:300px; background: rgba(0, 0, 0, .25); padding: 10px; border: none;">
     </div>
     <header>
-      <div id="nav-mobile" class="side-nav fixed" style="transform: translateX(0%);">
-        <div class="container"  style="padding-top: 15px;">
-            <div class="row green">
-                <div class="col white-text">
-                    <h5>Cleveland City Record Search</h5>
+        <div id="nav-mobile" class="side-nav fixed" style="transform: translateX(0%);">
+            <div class="container" style="padding-top: 15px;">
+                <div class="row green">
+                    <div class="col white-text">
+                        <h5>Cleveland City Record Search</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <input id="search-input">
+                    <button class="btn green waves-effect waves-green" onclick="drocer.action.search()"><i class="material-icons">search</i> Search</button>
+                </div>
+                <div id="search-results" class="row">
                 </div>
             </div>
-            <div class="row">
-                <input id="search-input">
-                <button class="btn green waves-effect waves-green" onclick="drocer.action.search()"><i class="material-icons">search</i> Search</button>
-            </div>
-            <div id="search-results" class="row">
-            </div>
+            <ul>
+                <li class="logo">
+                    <div style="float: left; clear: none;">
+                        <a id="logo-container" href="{{ url_for('route_landing') }}" class="brand-logo waves-effect waves-green">
+                            <img class="" style="height: 48px;" src="{{ url_for('static', filename='images/open-cleveland.png') }}">
+                        </a>
+                    </div>
+                    <div style="float: left; clear: none;">
+                        <a id="logo-container" href="{{ url_for('route_landing') }}" class="brand-logo waves-effect waves-green">
+                            <span class="" style="line-height: 64px;">Open Cleveland</span>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+                <li class="bold">
+                    <a href="{{ url_for('route_browse') }}" class="waves-effect waves-green">Browse</a>
+                </li>
+                <li class="bold">
+                    <a href="{{ url_for('route_about') }}" class="waves-effect waves-green">About</a>
+                </li>
+            </ul>
         </div>
-        <ul>
-        <li class="logo">
-            <div style="float: left; clear: none;">
-                <a id="logo-container" href="{{ url_for('route_landing') }}" class="brand-logo waves-effect waves-green">
-                    <img class="" style="height: 48px;" src="{{ url_for('static', filename='images/open-cleveland.png') }}">
-                </a>
-            </div>
-            <div style="float: left; clear: none;">
-                <a id="logo-container" href="{{ url_for('route_landing') }}" class="brand-logo waves-effect waves-green">
-                    <span class="" style="line-height: 64px;">Open Cleveland</span>
-                </a>
-            </div>
-            <div class="clearfix"></div>
-        </li>
-        <li class="bold">
-            <a href="{{ url_for('route_browse') }}" class="waves-effect waves-green">Browse</a>
-        </li>
-        <li class="bold">
-            <a href="{{ url_for('route_about') }}" class="waves-effect waves-green">About</a>
-        </li>
-      </ul>
-      </div>
     </header>
     <main>
-    <div id= "page-image-overlay" style="position: absolute; z-index:950; height:0px; width:0px; top:0px, left:0px"></div>
-    <div class="container" id="page-image-container">
-    </div>
-    <div class="container">
-        <div class="row">
-  {% block body -%}
-  {% endblock body -%}
+        <div id="page-image-overlay" style="position: absolute; z-index:950; height:0px; width:0px; top:0px, left:0px"></div>
+        <div class="container" id="page-image-container">
         </div>
-    </div>
-  </main>
-  <footer class="page-footer green">
-  <div class="footer-copyright">
-    <div class="container">
-        <div class="row right">
-    © 2016 Open Cleveland.
+        <div class="container">
+            <div class="row">
+                {% block body -%} {% endblock body -%}
+            </div>
         </div>
-    </div>
-  </div>
-  </footer>
-  </body>
-  <script src="{{ url_for('static', filename='js/jquery-3.1.0.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/prism.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/sha.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/drocer.js') }}"></script>
-{% block script -%}
-{% endblock script -%}
+    </main>
+    <footer class="page-footer green">
+        <div class="footer-copyright">
+            <div class="container">
+                <div class="row right">
+                    © 2016 Open Cleveland.
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
 </html>
