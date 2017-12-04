@@ -13,7 +13,6 @@ function drocerApp() {
     const search_input_element_id = 'search-input';
     const search_results_element_id = 'search-results';
     const search_result_control_element_id = 'search-results-control';
-    const search_result_control_element_shadow_id = 'search-results-control-shadow';
     const page_image_container_id = 'page-image-container';
     const page_image_element_id = 'page-image';
     const page_overlay_element_id = 'page-image-overlay';
@@ -253,12 +252,10 @@ function drocerApp() {
 
     function result_controls_show() {
         $(document.getElementById(search_result_control_element_id)).show();
-        $(document.getElementById(search_result_control_element_shadow_id)).show();
     }
 
     function result_controls_hide() {
         $(document.getElementById(search_result_control_element_id)).hide();
-        $(document.getElementById(search_result_control_element_shadow_id)).hide();
     }
 
     /**
