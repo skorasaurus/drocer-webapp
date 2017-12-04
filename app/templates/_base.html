@@ -24,11 +24,19 @@
 
 <body>
     <div id="search-results-control" style="display:none; position: absolute; z-index:975; min-width:300px; background: rgba(192, 192, 192, 1); padding: 10px; border: 1px solid black;">
-        <button class="btn green lighten-2 waves-effect waves-green" style="float: left;" onclick="drocer.action.match_previous()"><i class="material-icons">skip_previous</i>Match</button>
-        <button class="btn green lighten-2 waves-effect waves-green" style="float: right;" onclick="drocer.action.match_next()">Match<i class="material-icons">skip_next</i></button>
+        <button id="match-previous-button" class="btn green lighten-2 waves-effect waves-green" style="float: left;">
+            <i class="material-icons">skip_previous</i>Match
+        </button>
+        <button id="match-next-button" class="btn green lighten-2 waves-effect waves-green" style="float: right;">
+            Match<i class="material-icons">skip_next</i>
+        </button>
         <div class="clearfix"></div>
-        <button class="btn green lighten-3 waves-effect waves-green" style="float: left;" onclick="drocer.action.page_previous()"><i class="material-icons">skip_previous</i>Page</button>
-        <button class="btn green lighten-3 waves-effect waves-green" style="float: right;" onclick="drocer.action.page_next()">Page<i class="material-icons">skip_next</i></button>
+        <button id="page-previous-button" class="btn green lighten-3 waves-effect waves-green" style="float: left;">
+            <i class="material-icons">skip_previous</i>Page
+        </button>
+        <button id="page-next-button" class="btn green lighten-3 waves-effect waves-green" style="float: right;">
+            Page<i class="material-icons">skip_next</i>
+        </button>
         <div class="clearfix"></div>
     </div>
     <div id="search-results-control-shadow" style="display:none; position: absolute; z-index:970; min-width:300px; background: rgba(0, 0, 0, .25); padding: 10px; border: none;">
@@ -43,7 +51,9 @@
                 </div>
                 <div class="row">
                     <input id="search-input">
-                    <button class="btn green waves-effect waves-green" onclick="drocer.action.search()"><i class="material-icons">search</i> Search</button>
+                    <button id="search-button" class="btn green waves-effect waves-green">
+                        <i class="material-icons">search</i> Search
+                    </button>
                 </div>
                 <div id="search-results" class="row">
                 </div>
@@ -72,7 +82,7 @@
         </div>
     </header>
     <main>
-        <div id="page-image-overlay" style="position: absolute; z-index:950; height:0px; width:0px; top:0px, left:0px"></div>
+        <div id="page-image-overlay" style="position: absolute; z-index:950; height:0px; width:0px; top:0px; left:0px"></div>
         <div class="container" id="page-image-container">
         </div>
         <div class="container">

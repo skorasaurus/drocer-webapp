@@ -4,11 +4,11 @@ function drocerApp(settings) {
 
     $(window).scroll(result_controls_update);
 
-    var search_button = $("#search_button");
-    var match_previous_button = $("#match_previous_button");
-    var match_next_button = $("#match_next_button");
-    var page_previous_button = $("#page_previous_button");
-    var page_next_button = $("#page_next_button");
+    var search_button = $("#search-button");
+    var match_previous_button = $("#match-previous-button");
+    var match_next_button = $("#match-next-button");
+    var page_previous_button = $("#page-previous-button");
+    var page_next_button = $("#page-next-button");
 
     search_button.click(search);
 
