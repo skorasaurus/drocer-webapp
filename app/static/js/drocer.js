@@ -29,6 +29,7 @@ function drocerApp() {
 
     const search_input = $('#' + search_input_element_id);
     const search_results_element = $('#' + search_results_element_id);
+    const search_result_control_element = $('#' + search_result_control_element_id);
     const search_button = $('#' + search_button_id);
     const match_previous_button = $('#' + match_previous_button_id);
     const match_next_button = $('#' + match_next_button_id);
@@ -91,6 +92,11 @@ function drocerApp() {
     function page_change(direction) {
 
         var current_page = parseInt(_drocerState.page_number);
+
+        if (isNaN(current_page)) {
+            return;
+        }
+
         if (current_page == 1 && direction < 0) {
             return;
         }
@@ -122,11 +128,12 @@ function drocerApp() {
     }
 
     function match_change(direction) {
-        if (!_drocerState.match_number) {
+        var match_number = parseInt(_drocerState.match_number);
+
+        if (isNaN(match_number)) {
             return;
         }
 
-        var match_number = parseInt(_drocerState.match_number);
         match_number += direction;
         var selector = '[data-drocer-match-number=' + match_number + ']';
         if ($(selector).length) {
@@ -136,6 +143,9 @@ function drocerApp() {
 
     }
 
+    /**
+     * Click handler for the page_overlay_element
+     */
     function overlay_click() {
         var ov = document.getElementById(page_overlay_element_id);
         ov.style.background = 'rgba(255, 255, 165, 1)';
@@ -267,16 +277,17 @@ function drocerApp() {
     }
 
     function result_controls_show() {
-        $(document.getElementById(search_result_control_element_id)).show();
+        search_result_control_element.show();
     }
 
     function result_controls_hide() {
-        $(document.getElementById(search_result_control_element_id)).hide();
+        search_result_control_element.hide();
     }
 
     /**
      * Create a tiny div showing the location of a box in a page.
-     *
+     * @param {Object} box DrocerBox with x0,y0,x1,y1 in points (lower-left origin).
+     * @returns {HTMLDivElement} Tiny div showing the location of a box in a page.
      */
     function micro_page(box) {
         var mp_height = 38;
