@@ -1,6 +1,78 @@
-
 /* add padding for always-on fixed side nav */
-header, main, footer {
+
+header,
+main,
+footer {
     padding-left: 300px;
 }
 
+#search-results-control {
+    display: none;
+    position: absolute;
+    z-index: 975;
+    min-width: 300px;
+    background: rgba(192, 192, 192, 1);
+    padding: 10px;
+    border: 1px solid black;
+}
+
+#match-previous-button,
+#page-previous-button {
+    float: left;
+}
+
+#match-next-button,
+#page-next-button {
+    float: right;
+}
+
+#search-results-control-shadow {
+    display: none;
+    position: absolute;
+    z-index: 970;
+    min-width: 300px;
+    background: rgba(0, 0, 0, .25);
+    padding: 10px;
+    border: none;
+}
+
+#nav-mobile {
+    transform: translateX(0%);
+}
+
+#search-container {
+    padding-top: 15px;
+}
+
+.icon-valign {
+    vertical-align: middle;
+}
+
+#page-image-overlay {
+    position: absolute;
+    z-index: 950;
+    height: 0px;
+    width: 0px;
+    top: 0px;
+    left: 0px;
+}
+
+#logo-wrapper {
+    float: left;
+    clear: none;
+}
+
+#logo {
+    height: 48px;
+    vertical-align: middle;
+}
+
+#logo-text {
+    padding-left: 10px;
+}
+
+footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

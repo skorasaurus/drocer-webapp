@@ -23,27 +23,27 @@
 </head>
 
 <body>
-    <div id="search-results-control" style="display:none; position: absolute; z-index:975; min-width:300px; background: rgba(192, 192, 192, 1); padding: 10px; border: 1px solid black;">
-        <button id="match-previous-button" class="btn green lighten-2 waves-effect waves-green" style="float: left;">
-            <i class="material-icons">skip_previous</i>Match
+    <div id="search-results-control">
+        <button id="match-previous-button" class="btn green lighten-2 waves-effect waves-green">
+            <i class="material-icons icon-valign">skip_previous</i>Match
         </button>
-        <button id="match-next-button" class="btn green lighten-2 waves-effect waves-green" style="float: right;">
-            Match<i class="material-icons">skip_next</i>
+        <button id="match-next-button" class="btn green lighten-2 waves-effect waves-green">
+            Match<i class="material-icons icon-valign">skip_next</i>
         </button>
         <div class="clearfix"></div>
-        <button id="page-previous-button" class="btn green lighten-3 waves-effect waves-green" style="float: left;">
-            <i class="material-icons">skip_previous</i>Page
+        <button id="page-previous-button" class="btn green lighten-3 waves-effect waves-green">
+            <i class="material-icons icon-valign">skip_previous</i>Page
         </button>
-        <button id="page-next-button" class="btn green lighten-3 waves-effect waves-green" style="float: right;">
-            Page<i class="material-icons">skip_next</i>
+        <button id="page-next-button" class="btn green lighten-3 waves-effect waves-green">
+            Page<i class="material-icons icon-valign">skip_next</i>
         </button>
         <div class="clearfix"></div>
     </div>
-    <div id="search-results-control-shadow" style="display:none; position: absolute; z-index:970; min-width:300px; background: rgba(0, 0, 0, .25); padding: 10px; border: none;">
+    <div id="search-results-control-shadow">
     </div>
     <header>
-        <div id="nav-mobile" class="side-nav fixed" style="transform: translateX(0%);">
-            <div class="container" style="padding-top: 15px;">
+        <div id="nav-mobile" class="side-nav fixed">
+            <div id="search-container" class="container">
                 <div class="row green">
                     <div class="col white-text">
                         <h5>Cleveland City Record Search</h5>
@@ -52,7 +52,7 @@
                 <div class="row">
                     <input id="search-input">
                     <button id="search-button" class="btn green waves-effect waves-green">
-                        <i class="material-icons">search</i> Search
+                        <i class="material-icons icon-valign">search</i> Search
                     </button>
                 </div>
                 <div id="search-results" class="row">
@@ -60,14 +60,10 @@
             </div>
             <ul>
                 <li class="logo">
-                    <div style="float: left; clear: none;">
-                        <a id="logo-container" href="{{ url_for('route_landing') }}" class="brand-logo waves-effect waves-green">
-                            <img class="" style="height: 48px;" src="{{ url_for('static', filename='images/open-cleveland.png') }}">
-                        </a>
-                    </div>
-                    <div style="float: left; clear: none;">
-                        <a id="logo-container" href="{{ url_for('route_landing') }}" class="brand-logo waves-effect waves-green">
-                            <span class="" style="line-height: 64px;">Open Cleveland</span>
+                    <div id="logo-wrapper">
+                        <a id="logo-link" href="{{ url_for('route_landing') }}" class="brand-logo waves-effect waves-green">
+                            <img id="logo" src="{{ url_for('static', filename='images/open-cleveland.png') }}">
+                            <span id="logo-text">Open Cleveland</span>
                         </a>
                     </div>
                     <div class="clearfix"></div>
@@ -82,7 +78,7 @@
         </div>
     </header>
     <main>
-        <div id="page-image-overlay" style="position: absolute; z-index:950; height:0px; width:0px; top:0px; left:0px"></div>
+        <div id="page-image-overlay"></div>
         <div class="container" id="page-image-container">
         </div>
         <div class="container">
