@@ -19,11 +19,12 @@ function drocerApp() {
     const page_image_element_id = 'page-image';
     const page_overlay_element_id = 'page-image-overlay';
     const search_button_id = 'search-button';
-    const match_previous_button_id = "match-previous-button";
-    const match_next_button_id = "match-next-button";
-    const page_previous_button_id = "page-previous-button";
-    const page_next_button_id = "page-next-button";
-    const spinner_html = '<div class="preloader-wrapper big active"><div class="spinner-layer spinner-green-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>';;
+    const match_previous_button_id = 'match-previous-button';
+    const match_next_button_id = 'match-next-button';
+    const page_previous_button_id = 'page-previous-button';
+    const page_next_button_id = 'page-next-button';
+    const loading_spinner_id = 'loading-spinner';
+    const spinner_html = '';
     const no_results_text = 'No results.';
 
     const search_input = $('#' + search_input_element_id);
@@ -32,6 +33,7 @@ function drocerApp() {
     const match_next_button = $('#' + match_next_button_id);
     const page_previous_button = $('#' + page_previous_button_id);
     const page_next_button = $('#' + page_next_button_id);
+    const loading_spinner = $('#' + loading_spinner_id);
 
     // Set up button click and keyboard handlers
 
@@ -54,8 +56,8 @@ function drocerApp() {
     }
 
     function search() {
-        var results_container = document.getElementById(search_results_element_id);
-        $(results_container).html(spinner_html);
+        loading_spinner.show();
+
         $.post(
             './search', { q: search_input.val() }, searchCallback, 'json'
         );
@@ -63,6 +65,9 @@ function drocerApp() {
 
     function searchCallback(response) {
         window.DEBUG_SEARCH = response; //debug
+
+        loading_spinner.hide();
+
         if (response.matches.length > 0) {
             render_search_results(response.matches);
             result_controls_show();

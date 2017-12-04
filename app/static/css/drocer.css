@@ -37,6 +37,10 @@ footer {
     padding-top: 15px;
 }
 
+#loading-spinner {
+    display: none;
+}
+
 .icon-valign {
     vertical-align: middle;
 }
