@@ -68,22 +68,28 @@ function drocerApp() {
         }
     }
 
+    /**
+     * Resets the current state of the applications by setting everything to its default value.
+     */
+    function reset_state() {
+        search_results_element.html('');
+        page_image_container.html('');
+        hide_overlay();
+        currently_selected_match = NaN;
+        currently_selected_page = NaN;
+    }
+
     function search() {
+        reset_state();
 
         loading_spinner.show();
 
-        // Reset state for new search
-        search_results_element.html('');
-        page_image_container.html('');
-        currently_selected_match = NaN;
-        currently_selected_page = NaN;
-
         $.post(
-            './search', { q: search_input.val() }, searchCallback, 'json'
+            './search', { q: search_input.val() }, search_callback, 'json'
         );
     };
 
-    function searchCallback(response) {
+    function search_callback(response) {
         window.DEBUG_SEARCH = response; //debug
 
         loading_spinner.hide();
@@ -123,9 +129,7 @@ function drocerApp() {
 
         page_image_container.html(page_image);
 
-        // hide overlay
-        page_overlay_element.height(0);
-        page_overlay_element.width(0);
+        hide_overlay();
 
         // reset scroll
         scroll_to(0, 0);
@@ -155,6 +159,14 @@ function drocerApp() {
             currently_selected_match = newly_selected_match
         }
 
+    }
+
+    /**
+     * Hides the page image overlay by setting its height and width to 0px.
+     */
+    function hide_overlay() {
+        page_overlay_element.height(0);
+        page_overlay_element.width(0);
     }
 
     /**
