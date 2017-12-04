@@ -28,6 +28,7 @@ function drocerApp() {
     const no_results_text = 'No results.';
 
     const search_input = $('#' + search_input_element_id);
+    const search_results_element = $('#' + search_results_element_id);
     const search_button = $('#' + search_button_id);
     const match_previous_button = $('#' + match_previous_button_id);
     const match_next_button = $('#' + match_next_button_id);
@@ -38,6 +39,7 @@ function drocerApp() {
     // Set up button click and keyboard handlers
 
     search_input.keypress(on_search_input_keypress);
+    search_input.focus();
     search_button.click(search);
 
     match_previous_button.click(match_previous);
@@ -57,6 +59,7 @@ function drocerApp() {
 
     function search() {
         loading_spinner.show();
+        search_results_element.html('');
 
         $.post(
             './search', { q: search_input.val() }, searchCallback, 'json'
@@ -72,7 +75,7 @@ function drocerApp() {
             render_search_results(response.matches);
             result_controls_show();
         } else {
-            $(document.getElementById(search_results_element_id)).text(no_results_text);
+            search_results_element.text(no_results_text);
             result_controls_hide();
         }
     }
@@ -143,7 +146,6 @@ function drocerApp() {
     }
 
     function render_search_results(results) {
-        var results_container = document.getElementById(search_results_element_id);
         var ul = document.createElement('ul');
         ul.className = 'collection';
         var match_number = 1;
@@ -230,7 +232,7 @@ function drocerApp() {
             }
         }
         _drocerState.match_count = match_number;
-        $(results_container).html(ul);
+        search_results_element.html(ul);
     }
 
     /**
