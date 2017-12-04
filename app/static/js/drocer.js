@@ -10,6 +10,8 @@ function drocerApp() {
         match_count: null
     };
 
+    const ENTER_KEYCODE = 13;
+
     const search_input_element_id = 'search-input';
     const search_results_element_id = 'search-results';
     const search_result_control_element_id = 'search-results-control';
@@ -24,14 +26,16 @@ function drocerApp() {
     const spinner_html = '<div class="preloader-wrapper big active"><div class="spinner-layer spinner-green-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>';;
     const no_results_text = 'No results.';
 
+    const search_input = $('#' + search_input_element_id);
     const search_button = $('#' + search_button_id);
     const match_previous_button = $('#' + match_previous_button_id);
     const match_next_button = $('#' + match_next_button_id);
     const page_previous_button = $('#' + page_previous_button_id);
     const page_next_button = $('#' + page_next_button_id);
 
-    // Set up button click handlers
+    // Set up button click and keyboard handlers
 
+    search_input.keypress(on_search_input_keypress);
     search_button.click(search);
 
     match_previous_button.click(match_previous);
@@ -42,13 +46,18 @@ function drocerApp() {
 
     // Functions
 
+    function on_search_input_keypress(event) {
+        if (event.which === ENTER_KEYCODE) {
+            event.preventDefault();
+            search();
+        }
+    }
+
     function search() {
         var results_container = document.getElementById(search_results_element_id);
         $(results_container).html(spinner_html);
         $.post(
-            './search', { q: $('#' + search_input_element_id).val() },
-            searchCallback,
-            'json'
+            './search', { q: search_input.val() }, searchCallback, 'json'
         );
     };
 
