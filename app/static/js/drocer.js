@@ -1,14 +1,37 @@
-function drocerApp(settings) {
+function drocerApp() {
 
-    var _settings = settings;
+    // Private variables
 
-    $(window).scroll(result_controls_update);
+    const _drocerState = {
+        match_box_text: '',
+        page_number: null,
+        match_number: null,
+        document_name: '',
+        match_count: null
+    };
 
-    var search_button = $("#search-button");
-    var match_previous_button = $("#match-previous-button");
-    var match_next_button = $("#match-next-button");
-    var page_previous_button = $("#page-previous-button");
-    var page_next_button = $("#page-next-button");
+    const search_input_element_id = 'search-input';
+    const search_results_element_id = 'search-results';
+    const search_result_control_element_id = 'search-results-control';
+    const search_result_control_element_shadow_id = 'search-results-control-shadow';
+    const page_image_container_id = 'page-image-container';
+    const page_image_element_id = 'page-image';
+    const page_overlay_element_id = 'page-image-overlay';
+    const search_button_id = 'search-button';
+    const match_previous_button_id = "match-previous-button";
+    const match_next_button_id = "match-next-button";
+    const page_previous_button_id = "page-previous-button";
+    const page_next_button_id = "page-next-button";
+    const spinner_html = '<div class="preloader-wrapper big active"><div class="spinner-layer spinner-green-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>';;
+    const no_results_text = 'No results.';
+
+    const search_button = $('#' + search_button_id);
+    const match_previous_button = $('#' + match_previous_button_id);
+    const match_next_button = $('#' + match_next_button_id);
+    const page_previous_button = $('#' + page_previous_button_id);
+    const page_next_button = $('#' + page_next_button_id);
+
+    // Set up button click handlers
 
     search_button.click(search);
 
@@ -18,12 +41,13 @@ function drocerApp(settings) {
     page_previous_button.click(page_previous);
     page_next_button.click(page_next);
 
+    // Functions
 
     function search() {
-        var results_container = document.getElementById(_settings.search_results_element);
-        $(results_container).html(_settings.spinner);
+        var results_container = document.getElementById(search_results_element_id);
+        $(results_container).html(spinner_html);
         $.post(
-            './search', { q: $('#' + _settings.search_input_element).val() },
+            './search', { q: $('#' + search_input_element_id).val() },
             searchCallback,
             'json'
         );
@@ -35,7 +59,7 @@ function drocerApp(settings) {
             render_search_results(response.matches);
             result_controls_show();
         } else {
-            $(document.getElementById(_settings.search_results_element)).html('No results.');
+            $(document.getElementById(search_results_element_id)).text(no_results_text);
             result_controls_hide();
         }
     }
@@ -50,22 +74,22 @@ function drocerApp(settings) {
 
     function page_change(direction) {
 
-        var current_page = parseInt(drocerState.page_number);
+        var current_page = parseInt(_drocerState.page_number);
         if (current_page == 1 && direction < 0) {
             return;
         }
 
-        drocerState.page_number = current_page + direction;
-        var page_image_url = './page_images/' + drocerState.document_name + '-' + drocerState.page_number + '.png';
+        _drocerState.page_number = current_page + direction;
+        var page_image_url = './page_images/' + _drocerState.document_name + '-' + _drocerState.page_number + '.png';
         var page_image = new Image();
         page_image.src = page_image_url;
-        page_image.id = _settings.page_image_element;
+        page_image.id = page_image_element_id;
         page_image.style.zIndex = 900;
-        var page_image_container = document.getElementById(_settings.page_image_container);
+        var page_image_container = document.getElementById(page_image_container_id);
         $(page_image_container).html(page_image);
 
         // hide overlay
-        var ov = document.getElementById(_settings.page_overlay_element);
+        var ov = document.getElementById(page_overlay_element_id);
         ov.style.height = '0px';
         ov.style.width = '0px';
 
@@ -82,31 +106,31 @@ function drocerApp(settings) {
     }
 
     function match_change(direction) {
-        if (!drocerState.match_number) {
+        if (!_drocerState.match_number) {
             return;
         }
 
-        var match_number = parseInt(drocerState.match_number);
+        var match_number = parseInt(_drocerState.match_number);
         match_number += direction;
         var selector = '[data-drocer-match-number=' + match_number + ']';
         if ($(selector).length) {
             $(selector).click();
-            drocerState.match_number = match_number;
+            _drocerState.match_number = match_number;
         }
 
     }
 
     function overlay_click() {
-        var ov = document.getElementById(_settings.page_overlay_element);
+        var ov = document.getElementById(page_overlay_element_id);
         ov.style.background = 'rgba(255, 255, 165, 1)';
-        var box_text_html = drocerState.match_box_text.replace('\n', '<br>');
+        var box_text_html = _drocerState.match_box_text.replace('\n', '<br>');
         $(ov).html(box_text_html);
         $(ov).unbind('click');
         ov.title = '';
     }
 
     function render_search_results(results) {
-        var results_container = document.getElementById(_settings.search_results_element);
+        var results_container = document.getElementById(search_results_element_id);
         var ul = document.createElement('ul');
         ul.className = 'collection';
         var match_number = 1;
@@ -125,68 +149,74 @@ function drocerApp(settings) {
             li.appendChild(span);
             // create collection item lines
             for (var b in result.boxes) {
+
                 var box = result.boxes[b];
-                if (box.page_number) {
-                    var p = document.createElement('p');
-                    var txt = document.createTextNode('Page ' + box.page_number);
-                    var a = document.createElement('a');
-                    a.href = '#';
-                    a.title = box.text;
-                    a.setAttribute('data-drocer-box', JSON.stringify(box));
-                    a.setAttribute('data-drocer-document-name', JSON.stringify(result.document_name));
-                    a.setAttribute('data-drocer-match-number', match_number);
-                    a.onclick = function() {
-                        var document_name = JSON.parse(this.getAttribute('data-drocer-document-name'));
-                        var box = JSON.parse(this.getAttribute('data-drocer-box'));
-                        // update application state
-                        drocerState.document_name = document_name;
-                        drocerState.page_number = box.page_number;
-                        drocerState.match_number = this.getAttribute('data-drocer-match-number');
-                        drocerState.match_box_text = box.text;
-                        $('[data-drocer-match-number]').css('background-color', '');
-                        $(this).css('background-color', '#a5d6a7');
-                        // load page image
-                        var page_image_url = './page_images/' + document_name + '-' + box.page_number + '.png';
-                        var page_image = new Image();
-                        page_image.onload = function() {
-                            // position overlay on match box
-                            var ov = document.getElementById(_settings.page_overlay_element);
-                            ov.title = 'Click to select text.';
-                            ov.style.background = 'rgba(255, 255, 0, 0.35)';
-                            $(ov).html('');
-                            $(ov).bind('click', overlay_click);
 
-                            page_box = box_to_page(box);
-
-                            ov.style.height = page_box.height + 'px';
-                            ov.style.width = page_box.width + 'px';
-                            ov.style.top = page_box.top + 'px';
-                            ov.style.left = page_box.left + 'px';
-                            window.DEBUG_PAGE_BOX = page_box; //debug
-                            var scroll_x = page_box.left - 325; // aesthetic offset(25) + menu width offset(300)
-                            var scroll_y = page_box.top - 175; // aesthetic offset(25) + control height offset (175)
-                            //console.log('scrolling: window.scrollTo('+scroll_x+','+scroll_y+')');//debug
-
-                            scroll_to(scroll_x, scroll_y);
-                        }
-                        page_image.src = page_image_url;
-                        page_image.id = _settings.page_image_element;
-                        page_image.style.zIndex = 900;
-                        var page_image_container = document.getElementById(_settings.page_image_container);
-                        $(page_image_container).html(page_image);
-                        window.DEBUG_BOX = box; //debug
-                    };
-                    p.appendChild(txt);
-
-                    p.appendChild(micro_page(box));
-
-                    a.appendChild(p);
-                    li.appendChild(a);
-                    match_number++;
+                if (!box.page_number) {
+                    continue;
                 }
+
+                var p = document.createElement('p');
+                var txt = document.createTextNode('Page ' + box.page_number);
+                var a = document.createElement('a');
+
+                a.href = '#';
+                a.title = box.text;
+                a.setAttribute('data-drocer-box', JSON.stringify(box));
+                a.setAttribute('data-drocer-document-name', JSON.stringify(result.document_name));
+                a.setAttribute('data-drocer-match-number', match_number);
+                a.onclick = function() {
+                    var document_name = JSON.parse(this.getAttribute('data-drocer-document-name'));
+                    var box = JSON.parse(this.getAttribute('data-drocer-box'));
+                    // update application state
+                    _drocerState.document_name = document_name;
+                    _drocerState.page_number = box.page_number;
+                    _drocerState.match_number = this.getAttribute('data-drocer-match-number');
+                    _drocerState.match_box_text = box.text;
+                    $('[data-drocer-match-number]').css('background-color', '');
+                    $(this).css('background-color', '#a5d6a7');
+                    // load page image
+                    var page_image_url = './page_images/' + document_name + '-' + box.page_number + '.png';
+                    var page_image = new Image();
+                    page_image.onload = function() {
+                        // position overlay on match box
+                        var ov = document.getElementById(page_overlay_element_id);
+                        ov.title = 'Click to select text.';
+                        ov.style.background = 'rgba(255, 255, 0, 0.35)';
+                        $(ov).html('');
+                        $(ov).bind('click', overlay_click);
+
+                        page_box = box_to_page(box);
+
+                        ov.style.height = page_box.height + 'px';
+                        ov.style.width = page_box.width + 'px';
+                        ov.style.top = page_box.top + 'px';
+                        ov.style.left = page_box.left + 'px';
+                        window.DEBUG_PAGE_BOX = page_box; //debug
+                        var scroll_x = page_box.left - 325; // aesthetic offset(25) + menu width offset(300)
+                        var scroll_y = page_box.top - 175; // aesthetic offset(25) + control height offset (175)
+                        //console.log('scrolling: window.scrollTo('+scroll_x+','+scroll_y+')');//debug
+
+                        scroll_to(scroll_x, scroll_y);
+                    }
+                    page_image.src = page_image_url;
+                    page_image.id = page_image_element_id;
+                    page_image.style.zIndex = 900;
+                    var page_image_container = document.getElementById(page_image_container_id);
+                    $(page_image_container).html(page_image);
+                    window.DEBUG_BOX = box; //debug
+                };
+                p.appendChild(txt);
+
+                p.appendChild(micro_page(box));
+
+                a.appendChild(p);
+                li.appendChild(a);
+                match_number++;
+
             }
         }
-        drocerState.match_count = match_number;
+        _drocerState.match_count = match_number;
         $(results_container).html(ul);
     }
 
@@ -219,29 +249,16 @@ function drocerApp(settings) {
 
     function scroll_to(x, y) {
         window.scrollTo(x, y);
-        result_controls_update();
     }
 
     function result_controls_show() {
-        $(document.getElementById(_settings.search_result_control_element)).show();
-        $(document.getElementById(_settings.search_result_control_element_shadow)).show();
+        $(document.getElementById(search_result_control_element_id)).show();
+        $(document.getElementById(search_result_control_element_shadow_id)).show();
     }
 
     function result_controls_hide() {
-        $(document.getElementById(_settings.search_result_control_element)).hide();
-        $(document.getElementById(_settings.search_result_control_element_shadow)).hide();
-    }
-
-    function result_controls_update() {
-        var control = document.getElementById(_settings.search_result_control_element);
-        var shadow = document.getElementById(_settings.search_result_control_element_shadow);
-        var body_box = document.getElementsByTagName('body')[0].getBoundingClientRect();
-        control.style.top = 0 - body_box.top + 25 + 'px';
-        control.style.left = 0 - body_box.left + 325 + 'px';
-        shadow.style.top = 0 - body_box.top + 25 + 3 + 'px';
-        shadow.style.left = 0 - body_box.left + 325 + 3 + 'px';
-        shadow.style.height = control.getBoundingClientRect().height + 'px';
-        shadow.style.width = control.getBoundingClientRect().width + 'px';
+        $(document.getElementById(search_result_control_element_id)).hide();
+        $(document.getElementById(search_result_control_element_shadow_id)).hide();
     }
 
     /**
@@ -289,30 +306,6 @@ function drocerApp(settings) {
     }
 }
 
-var drocerState;
-
 $(function() {
-
-    drocerState = {
-        match_box_text: "",
-        page_number: null,
-        match_number: null,
-        document_name: "",
-        match_count: null
-    };
-
-    var settings = {
-        search_input_element: 'search-input',
-        search_results_element: 'search-results',
-        search_result_control_element: 'search-results-control',
-        search_result_control_element_shadow: 'search-results-control-shadow',
-        page_image_container: 'page-image-container',
-        page_image_element: 'page-image',
-        page_overlay_element: 'page-image-overlay',
-        spinner: '<div class="preloader-wrapper big active"><div class="spinner-layer spinner-green-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>'
-    };
-
-
-    var drocer = new drocerApp(settings);
-
+    var drocer = new drocerApp();
 });

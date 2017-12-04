@@ -8,12 +8,27 @@ footer {
 
 #search-results-control {
     display: none;
-    position: absolute;
+    position: fixed;
     z-index: 975;
+    left: 320px;
+    top: 20px;
     min-width: 300px;
     background: rgba(192, 192, 192, 1);
     padding: 10px;
     border: 1px solid black;
+}
+
+#search-results-control-shadow {
+    display: none;
+    position: fixed;
+    left: 325px;
+    top: 25px;
+    z-index: 970;
+    min-width: 300px;
+    min-height: 94px;
+    background: rgba(0, 0, 0, .25);
+    padding: 10px;
+    border: none;
 }
 
 #match-previous-button,
@@ -24,16 +39,6 @@ footer {
 #match-next-button,
 #page-next-button {
     float: right;
-}
-
-#search-results-control-shadow {
-    display: none;
-    position: absolute;
-    z-index: 970;
-    min-width: 300px;
-    background: rgba(0, 0, 0, .25);
-    padding: 10px;
-    border: none;
 }
 
 #nav-mobile {
