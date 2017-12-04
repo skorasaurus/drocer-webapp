@@ -2,15 +2,8 @@ function drocerApp() {
 
     // Private variables
 
-    const _drocerState = {
-        match_box_text: '',
-        page_number: null,
-        match_number: null,
-        document_name: '',
-        match_count: null
-    };
-
     const ENTER_KEYCODE = 13;
+    const PIXEL_SUFFIX = "px";
 
     const search_input_element_id = 'search-input';
     const search_results_element_id = 'search-results';
@@ -26,16 +19,33 @@ function drocerApp() {
     const loading_spinner_id = 'loading-spinner';
     const spinner_html = '';
     const no_results_text = 'No results.';
+    const overlay_hover_text = 'Click to select text.';
+
+    const data_box_attribute = 'data-drocer-box';
+    const data_document_name_attribute = 'data-drocer-document-name';
+    const data_match_number_attribute = 'data-drocer-match-number';
+
+    const selected_result_class = 'selected-result';
+    const overlay_clicked_class = 'overlay-clicked';
+    const overlay_initial_class = 'overlay-initial';
+    const result_title_class = 'result-title';
 
     const search_input = $('#' + search_input_element_id);
     const search_results_element = $('#' + search_results_element_id);
     const search_result_control_element = $('#' + search_result_control_element_id);
+    const page_image_container = $('#' + page_image_container_id);
+    const page_overlay_element = $('#' + page_overlay_element_id);
     const search_button = $('#' + search_button_id);
     const match_previous_button = $('#' + match_previous_button_id);
     const match_next_button = $('#' + match_next_button_id);
     const page_previous_button = $('#' + page_previous_button_id);
     const page_next_button = $('#' + page_next_button_id);
     const loading_spinner = $('#' + loading_spinner_id);
+
+    var currently_selected_document_name = null;
+    var currently_selected_match = NaN;
+    var currently_selected_match_box_text = '';
+    var currently_selected_page = NaN;
 
     // Set up button click and keyboard handlers
 
@@ -59,8 +69,14 @@ function drocerApp() {
     }
 
     function search() {
+
         loading_spinner.show();
+
+        // Reset state for new search
         search_results_element.html('');
+        page_image_container.html('');
+        currently_selected_match = NaN;
+        currently_selected_page = NaN;
 
         $.post(
             './search', { q: search_input.val() }, searchCallback, 'json'
@@ -91,29 +107,25 @@ function drocerApp() {
 
     function page_change(direction) {
 
-        var current_page = parseInt(_drocerState.page_number);
-
-        if (isNaN(current_page)) {
+        if (isNaN(currently_selected_page)) {
             return;
         }
 
-        if (current_page == 1 && direction < 0) {
+        if (currently_selected_page == 1 && direction < 0) {
             return;
         }
 
-        _drocerState.page_number = current_page + direction;
-        var page_image_url = './page_images/' + _drocerState.document_name + '-' + _drocerState.page_number + '.png';
+        currently_selected_page += direction;
+        var page_image_url = './page_images/' + currently_selected_document_name + '-' + currently_selected_page + '.png';
         var page_image = new Image();
         page_image.src = page_image_url;
         page_image.id = page_image_element_id;
-        page_image.style.zIndex = 900;
-        var page_image_container = document.getElementById(page_image_container_id);
-        $(page_image_container).html(page_image);
+
+        page_image_container.html(page_image);
 
         // hide overlay
-        var ov = document.getElementById(page_overlay_element_id);
-        ov.style.height = '0px';
-        ov.style.width = '0px';
+        page_overlay_element.height(0);
+        page_overlay_element.width(0);
 
         // reset scroll
         scroll_to(0, 0);
@@ -128,17 +140,19 @@ function drocerApp() {
     }
 
     function match_change(direction) {
-        var match_number = parseInt(_drocerState.match_number);
 
-        if (isNaN(match_number)) {
+        if (isNaN(currently_selected_match)) {
             return;
         }
 
-        match_number += direction;
-        var selector = '[data-drocer-match-number=' + match_number + ']';
+        var newly_selected_match = currently_selected_match + direction;
+
+        var selector = '[' + data_match_number_attribute + '=' + newly_selected_match + ']';
         if ($(selector).length) {
+            // If this result exists, click it
             $(selector).click();
-            _drocerState.match_number = match_number;
+            // Persist this selection globally
+            currently_selected_match = newly_selected_match
         }
 
     }
@@ -147,31 +161,52 @@ function drocerApp() {
      * Click handler for the page_overlay_element
      */
     function overlay_click() {
-        var ov = document.getElementById(page_overlay_element_id);
-        ov.style.background = 'rgba(255, 255, 165, 1)';
-        var box_text_html = _drocerState.match_box_text.replace('\n', '<br>');
-        $(ov).html(box_text_html);
-        $(ov).unbind('click');
-        ov.title = '';
+        update_overlay_element(currently_selected_match_box_text, '', null, overlay_clicked_class, overlay_initial_class);
+    }
+
+    /**
+     * Class that updates the page_overlay_element state
+     * @param {string} text The text that will be added to the overlay
+     * @param {string} title Hovertext of the element
+     * @param {Function} clickFunction Function to bind to click events, pass null to unbind all click events
+     * @param {string} addClasses Space separated classes to add
+     * @param {string} removeClasses Space separated classes to remove
+     */
+    function update_overlay_element(text, title, clickFunction, addClasses, removeClasses) {
+        page_overlay_element
+            .text(text)
+            .attr('title', title)
+            .addClass(addClasses)
+            .removeClass(removeClasses);
+
+        if (clickFunction) {
+            page_overlay_element.click(clickFunction);
+        } else {
+            page_overlay_element.unbind('click');
+        }
     }
 
     function render_search_results(results) {
         var ul = document.createElement('ul');
         ul.className = 'collection';
-        var match_number = 1;
+        var matches = 1;
         for (var r in results) {
+
             var result = results[r];
+
             // create collection item
             var li = document.createElement('li');
             li.className = 'collection-item';
-            ul.appendChild(li);
+
             // create collection item title
             var span = document.createElement('span');
-            span.className = 'title';
-            span.style = 'font-weight: bold;'
+            span.className = result_title_class;
+
             var txt = document.createTextNode(result.title);
+
             span.appendChild(txt);
             li.appendChild(span);
+
             // create collection item lines
             for (var b in result.boxes) {
 
@@ -181,68 +216,89 @@ function drocerApp() {
                     continue;
                 }
 
+                var current_match_number = matches;
                 var p = document.createElement('p');
                 var txt = document.createTextNode('Page ' + box.page_number);
                 var a = document.createElement('a');
 
                 a.href = '#';
                 a.title = box.text;
-                a.setAttribute('data-drocer-box', JSON.stringify(box));
-                a.setAttribute('data-drocer-document-name', JSON.stringify(result.document_name));
-                a.setAttribute('data-drocer-match-number', match_number);
+                a.setAttribute(data_box_attribute, JSON.stringify(box));
+                a.setAttribute(data_document_name_attribute, JSON.stringify(result.document_name));
+                a.setAttribute(data_match_number_attribute, current_match_number);
                 a.onclick = function() {
-                    var document_name = JSON.parse(this.getAttribute('data-drocer-document-name'));
-                    var box = JSON.parse(this.getAttribute('data-drocer-box'));
-                    // update application state
-                    _drocerState.document_name = document_name;
-                    _drocerState.page_number = box.page_number;
-                    _drocerState.match_number = this.getAttribute('data-drocer-match-number');
-                    _drocerState.match_box_text = box.text;
-                    $('[data-drocer-match-number]').css('background-color', '');
-                    $(this).css('background-color', '#a5d6a7');
-                    // load page image
-                    var page_image_url = './page_images/' + document_name + '-' + box.page_number + '.png';
-                    var page_image = new Image();
-                    page_image.onload = function() {
-                        // position overlay on match box
-                        var ov = document.getElementById(page_overlay_element_id);
-                        ov.title = 'Click to select text.';
-                        ov.style.background = 'rgba(255, 255, 0, 0.35)';
-                        $(ov).html('');
-                        $(ov).bind('click', overlay_click);
-
-                        page_box = box_to_page(box);
-
-                        ov.style.height = page_box.height + 'px';
-                        ov.style.width = page_box.width + 'px';
-                        ov.style.top = page_box.top + 'px';
-                        ov.style.left = page_box.left + 'px';
-                        window.DEBUG_PAGE_BOX = page_box; //debug
-                        var scroll_x = page_box.left - 325; // aesthetic offset(25) + menu width offset(300)
-                        var scroll_y = page_box.top - 175; // aesthetic offset(25) + control height offset (175)
-                        //console.log('scrolling: window.scrollTo('+scroll_x+','+scroll_y+')');//debug
-
-                        scroll_to(scroll_x, scroll_y);
-                    }
-                    page_image.src = page_image_url;
-                    page_image.id = page_image_element_id;
-                    page_image.style.zIndex = 900;
-                    var page_image_container = document.getElementById(page_image_container_id);
-                    $(page_image_container).html(page_image);
-                    window.DEBUG_BOX = box; //debug
+                    result_box_click(this);
                 };
+
                 p.appendChild(txt);
 
                 p.appendChild(micro_page(box));
 
                 a.appendChild(p);
                 li.appendChild(a);
-                match_number++;
+                matches++;
 
             }
+
+            ul.appendChild(li);
         }
-        _drocerState.match_count = match_number;
+
         search_results_element.html(ul);
+    }
+
+    /**
+     * Updates application state, creates page url and binds onload functionality for page image, adds image to page_image_container
+     * @param {HTMLAnchorElement} result 
+     */
+    function result_box_click(result) {
+        var document_name_attribute = JSON.parse(result.getAttribute(data_document_name_attribute));
+        var box = JSON.parse(result.getAttribute(data_box_attribute));
+
+        // update application state
+        currently_selected_document_name = document_name_attribute;
+        currently_selected_page = parseInt(box.page_number);
+        currently_selected_match = parseInt(result.getAttribute(data_match_number_attribute));
+        currently_selected_match_box_text = box.text;
+
+        // Turn off all other result selections
+        $('[data-drocer-match-number]').removeClass(selected_result_class);
+        // Select this result
+        $(result).addClass(selected_result_class);
+
+        // load page image
+        var page_image_url = './page_images/' + currently_selected_document_name + '-' + currently_selected_page + '.png';
+        var page_image = new Image();
+        page_image.onload = function() {
+            page_image_load(box);
+        }
+        page_image.src = page_image_url;
+        page_image.id = page_image_element_id;
+
+        page_image_container.html(page_image);
+
+        window.DEBUG_BOX = box; //debug
+    }
+
+    /**
+     * Handles updating the overlay and scrolling the window when a page is loaded
+     * @param {Object} box DrocerBox with x0,y0,x1,y1 in points (lower-left origin).
+     */
+    function page_image_load(box) {
+        update_overlay_element('', overlay_hover_text, overlay_click, overlay_initial_class, overlay_clicked_class);
+
+        page_box = box_to_page(box);
+
+        page_overlay_element.height(page_box.height);
+        page_overlay_element.width(page_box.width);
+        page_overlay_element.css('top', page_box.top + PIXEL_SUFFIX);
+        page_overlay_element.css('left', page_box.left + PIXEL_SUFFIX);
+
+        window.DEBUG_PAGE_BOX = page_box; //debug
+        var scroll_x = page_box.left - 325; // aesthetic offset(25) + menu width offset(300)
+        var scroll_y = page_box.top - 175; // aesthetic offset(25) + control height offset (175)
+        //console.log('scrolling: window.scrollTo('+scroll_x+','+scroll_y+')');//debug
+
+        scroll_to(scroll_x, scroll_y);
     }
 
     /**

@@ -9,14 +9,17 @@ footer {
 #search-results-control {
     display: none;
     position: fixed;
-    z-index: 975;
     left: 320px;
     top: 20px;
     min-width: 300px;
     background: rgba(192, 192, 192, 1);
     padding: 10px;
     border: 1px solid black;
-    box-shadow: 5px 5px rgba(0, 0, 0, .25);
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+.selected-result {
+    background-color: #a5d6a7;
 }
 
 #match-previous-button,
@@ -45,13 +48,32 @@ footer {
     vertical-align: middle;
 }
 
+#page-image {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
 #page-image-overlay {
     position: absolute;
-    z-index: 950;
     height: 0px;
     width: 0px;
     top: 0px;
     left: 0px;
+}
+
+.result-title {
+    font-weight: bold;
+}
+
+.overlay-initial {
+    background-color: rgba(255, 255, 0, 0.35);
+}
+
+.overlay-clicked {
+    background-color: rgba(255, 255, 165, 1);
+    white-space: normal;
 }
 
 #logo-wrapper {
