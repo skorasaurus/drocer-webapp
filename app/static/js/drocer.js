@@ -2,45 +2,45 @@ function drocerApp() {
 
     // Private variables
 
-    const ENTER_KEYCODE = 13;
-    const PIXEL_SUFFIX = "px";
+    var ENTER_KEYCODE = 13;
+    var PIXEL_SUFFIX = "px";
 
-    const search_input_element_id = 'search-input';
-    const search_results_element_id = 'search-results';
-    const search_result_control_element_id = 'search-results-control';
-    const page_image_container_id = 'page-image-container';
-    const page_image_element_id = 'page-image';
-    const page_overlay_element_id = 'page-image-overlay';
-    const search_button_id = 'search-button';
-    const match_previous_button_id = 'match-previous-button';
-    const match_next_button_id = 'match-next-button';
-    const page_previous_button_id = 'page-previous-button';
-    const page_next_button_id = 'page-next-button';
-    const loading_spinner_id = 'loading-spinner';
-    const spinner_html = '';
-    const no_results_text = 'No results.';
-    const overlay_hover_text = 'Click to select text.';
+    var search_input_element_id = 'search-input';
+    var search_results_element_id = 'search-results';
+    var search_result_control_element_id = 'search-results-control';
+    var page_image_container_id = 'page-image-container';
+    var page_image_element_id = 'page-image';
+    var page_overlay_element_id = 'page-image-overlay';
+    var search_button_id = 'search-button';
+    var match_previous_button_id = 'match-previous-button';
+    var match_next_button_id = 'match-next-button';
+    var page_previous_button_id = 'page-previous-button';
+    var page_next_button_id = 'page-next-button';
+    var loading_spinner_id = 'loading-spinner';
+    var spinner_html = '';
+    var no_results_text = 'No results.';
+    var overlay_hover_text = 'Click to select text.';
 
-    const data_box_attribute = 'data-drocer-box';
-    const data_document_name_attribute = 'data-drocer-document-name';
-    const data_match_number_attribute = 'data-drocer-match-number';
+    var data_box_attribute = 'data-drocer-box';
+    var data_document_name_attribute = 'data-drocer-document-name';
+    var data_match_number_attribute = 'data-drocer-match-number';
 
-    const selected_result_class = 'selected-result';
-    const overlay_clicked_class = 'overlay-clicked';
-    const overlay_initial_class = 'overlay-initial';
-    const result_title_class = 'result-title';
+    var selected_result_class = 'selected-result';
+    var overlay_clicked_class = 'overlay-clicked';
+    var overlay_initial_class = 'overlay-initial';
+    var result_title_class = 'result-title';
 
-    const search_input = $('#' + search_input_element_id);
-    const search_results_element = $('#' + search_results_element_id);
-    const search_result_control_element = $('#' + search_result_control_element_id);
-    const page_image_container = $('#' + page_image_container_id);
-    const page_overlay_element = $('#' + page_overlay_element_id);
-    const search_button = $('#' + search_button_id);
-    const match_previous_button = $('#' + match_previous_button_id);
-    const match_next_button = $('#' + match_next_button_id);
-    const page_previous_button = $('#' + page_previous_button_id);
-    const page_next_button = $('#' + page_next_button_id);
-    const loading_spinner = $('#' + loading_spinner_id);
+    var search_input = $('#' + search_input_element_id);
+    var search_results_element = $('#' + search_results_element_id);
+    var search_result_control_element = $('#' + search_result_control_element_id);
+    var page_image_container = $('#' + page_image_container_id);
+    var page_overlay_element = $('#' + page_overlay_element_id);
+    var search_button = $('#' + search_button_id);
+    var match_previous_button = $('#' + match_previous_button_id);
+    var match_next_button = $('#' + match_next_button_id);
+    var page_previous_button = $('#' + page_previous_button_id);
+    var page_next_button = $('#' + page_next_button_id);
+    var loading_spinner = $('#' + loading_spinner_id);
 
     var currently_selected_document_name = null;
     var currently_selected_match = NaN;
