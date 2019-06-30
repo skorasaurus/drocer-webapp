@@ -108,7 +108,7 @@ if __name__ == '__main__':
     start_time = timeit.default_timer()
 
     # Process files.
-    pattern = re.compile('([A-Z][a-z]*)([0-9][0-9]?)([0-9]{4})\.pdf')
+    pattern = re.compile('([0-9]{4})\-([0-9][0-9]?)\-([0-9][0-9]?)\.pdf')
     for filename in os.listdir(INPUT_PATH):
         result = pattern.match(filename)
         if result:
