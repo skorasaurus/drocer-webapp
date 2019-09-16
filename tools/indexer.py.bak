@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-from builtins import str
 #
 # tools/indexer.py
 #
@@ -70,7 +69,7 @@ if __name__ == '__main__':
                 title = document.title,
                 content = document.get_index_text(),
                 source_document_path = document.source_document_path,
-                structured_document_path = str(path),
+                structured_document_path = unicode(path),
                 ordres_numbers = document.get_index_metadata('ordres_numbers'),
                 parcel_numbers = document.get_index_metadata('parcel_numbers'),
                 calendar_numbers = document.get_index_metadata('calendar_numbers')

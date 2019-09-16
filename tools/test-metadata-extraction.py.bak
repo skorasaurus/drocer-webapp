@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 #
 # tools/test-metadata-extraction.py
 #
@@ -27,12 +26,12 @@ from pdfminer.six.layout import LAParams
 from pdfminer.six.converter import PDFPageAggregator
 from pdfminer.six.layout import LTTextBox
 
-from .modules.document_structure import DrocerSerializable
-from .modules.document_structure import DrocerDocument
-from .modules.document_structure import DrocerPage
-from .modules.document_structure import DrocerBox
+from modules.document_structure import DrocerSerializable
+from modules.document_structure import DrocerDocument
+from modules.document_structure import DrocerPage
+from modules.document_structure import DrocerBox
 
-from .modules import document_metadata
+from modules import document_metadata
 
 
 if __name__ == '__main__':

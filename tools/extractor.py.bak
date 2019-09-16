@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 #
 # tools/extractor.py
 #
@@ -16,23 +15,23 @@ import os
 import re
 import timeit
 
-from pdfminer.pdfparser import PDFParser
-from pdfminer.pdfdocument import PDFDocument
-from pdfminer.pdfpage import PDFPage
-from pdfminer.pdfpage import PDFTextExtractionNotAllowed
-from pdfminer.pdfinterp import PDFResourceManager
-from pdfminer.pdfinterp import PDFPageInterpreter
-from pdfminer.pdfdevice import PDFDevice
-from pdfminer.layout import LAParams
-from pdfminer.converter import PDFPageAggregator
-from pdfminer.layout import LTTextBox
+from pdfminer.six.pdfparser import PDFParser
+from pdfminer.six.pdfdocument import PDFDocument
+from pdfminer.six.pdfpage import PDFPage
+from pdfminer.six.pdfpage import PDFTextExtractionNotAllowed
+from pdfminer.six.pdfinterp import PDFResourceManager
+from pdfminer.six.pdfinterp import PDFPageInterpreter
+from pdfminer.six.pdfdevice import PDFDevice
+from pdfminer.six.layout import LAParams
+from pdfminer.six.converter import PDFPageAggregator
+from pdfminer.six.layout import LTTextBox
 
-from .modules.document_structure import DrocerSerializable
-from .modules.document_structure import DrocerDocument
-from .modules.document_structure import DrocerPage
-from .modules.document_structure import DrocerBox
+from modules.document_structure import DrocerSerializable
+from modules.document_structure import DrocerDocument
+from modules.document_structure import DrocerPage
+from modules.document_structure import DrocerBox
 
-from .modules import document_metadata
+from modules import document_metadata
 
 
 def process_pdf(title, path):

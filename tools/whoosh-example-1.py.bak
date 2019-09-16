@@ -1,5 +1,4 @@
 from __future__ import print_function
-from builtins import str
 # woosh-example-1.py
 #
 # This example reads all the text documents in the input folder, indexes
@@ -36,9 +35,9 @@ for filename in os.listdir(INPUT_PATH):
     path = INPUT_PATH + '/' + filename
     with open(path, 'r') as f:
         writer.add_document(
-            title = str(filename, errors='replace'),
-            content = str(f.read(), errors='replace'),
-            path = str(path, errors='replace')
+            title = unicode(filename, errors='replace'),
+            content = unicode(f.read(), errors='replace'),
+            path = unicode(path, errors='replace')
         )
 writer.commit()
 

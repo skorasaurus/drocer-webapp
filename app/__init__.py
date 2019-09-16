@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from builtins import str
 # Import flask and template operators.
 from flask import Flask, render_template, request, send_from_directory, session, redirect, url_for
 
@@ -9,7 +11,7 @@ wsgi_app.config.from_object('config')
 
 
 # Import application modules.
-from modules.searcher import DrocerSearcher
+from .modules.searcher import DrocerSearcher
 drocer_searcher = DrocerSearcher(wsgi_app)
 
 # Setup logging.

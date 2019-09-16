@@ -1,8 +1,5 @@
 from __future__ import print_function
 from __future__ import absolute_import
-from __future__ import division
-from builtins import input
-from past.utils import old_div
 #
 # tools/searcher.py
 #
@@ -61,7 +58,7 @@ if __name__ == '__main__':
     ]
     query_strings = default_queries
     waiting_time_start = timeit.default_timer()
-    query_input = input('Enter a query or leave blank for default queries: ')
+    query_input = raw_input('Enter a query or leave blank for default queries: ')
     waiting_time_stop = timeit.default_timer()
     if query_input:
         query_strings = [query_input]
@@ -83,7 +80,7 @@ if __name__ == '__main__':
             for term in hit.matched_terms():
                 boxes = document.get_boxes_for_term(term)
                 for box in boxes:
-                    if len(term[1]) > old_div(len(query_string), 2): # ignore short matches
+                    if len(term[1]) > len(query_string) / 2: # ignore short matches
                         print('        field %s term "%s" page %s box: %s: %s' % (
                             term[0],
                             term[1],
